@@ -11,8 +11,7 @@ frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
 print(frame_height,frame_width)
 
-# out = cv2.VideoWriter('output.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height),True)
-out = cv2.VideoWriter('output.avi',cv2.VideoWriter_fourcc(*'DIVX'), 10, (frame_width,frame_height),True)
+out = cv2.VideoWriter('output.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
 
 while(True):
   ret, frame = cap.read()
@@ -20,19 +19,19 @@ while(True):
     print("Can't receive frame (stream end?). Exiting ...")
     break
   k = cv2.waitKey(1)
-  cv2.imshow('frame',frame)
+  gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+  cv2.imshow('frame',gray)
 
     # press space key to start recording
   if k%256 == 32:
     record = ~record
-    if record:
+    if record==False:
         # record = True
         print('recoding start') 
     else:
         # record=False
         print('recoding pause')
   if record:
-    print('recoding frra,e')
     out.write(frame) 
 
     # press q key to close the program
