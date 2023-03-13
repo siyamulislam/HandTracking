@@ -57,7 +57,7 @@ def main():
             print("Can't receive img (stream end?). Exiting ...")
             break
         img = detector.findHands(img)
-        lmList = detector.findPosition(img)
+        lmList = detector.findPosition(img, draw=True)
 
         if len(lmList) != 0:
             print(lmList[8])
@@ -65,7 +65,7 @@ def main():
         fps = 1 / (cTime - pTime)
         pTime = cTime
         cv2.putText(img, str(int(fps)), (10, 60), cv2.FONT_HERSHEY_PLAIN, 3, (0, 255, 0), 3)
-        cv2.imshow('img', img)
+        cv2.imshow('Hand Tracking', img)
 
         k = cv2.waitKey(1)
         # press space key to start recording
