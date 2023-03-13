@@ -1,4 +1,6 @@
 import cv2
+import time
+pTime=0
 
 record = False
 
@@ -20,6 +22,11 @@ while(True):
     print("Can't receive frame (stream end?). Exiting ...")
     break
   k = cv2.waitKey(1)
+  cTime=time.time()
+  fps=1/(cTime-pTime)
+  pTime=cTime
+
+  cv2.putText(frame,str(int(fps)),(10,60),cv2.FONT_HERSHEY_PLAIN,3,(0,255,0),3)
   cv2.imshow('frame',frame)
 
     # press space key to start recording
