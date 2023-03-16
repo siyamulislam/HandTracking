@@ -16,16 +16,16 @@ class handDetector():
         self.mpDraw = mp.solutions.drawing_utils
 
     def findHands(self, img, draw=True):
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        self.results = self.hands.process(imgRGB)
         if self.results.multi_hand_landmarks:
             for handLms in self.results.multi_hand_landmarks:
                 if draw:
                     self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS)
         return img
 
-    def findPosition(self, img, handNo=0, handID=8, draw=True):
+    def findPosition(self, img, handNo=0, drawItems=[4,8], draw=True):
         lmList = []
+        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        self.results = self.hands.process(imgRGB)
         if self.results.multi_hand_landmarks:
             seletedhand = self.results.multi_hand_landmarks[handNo]
             for id, lm in enumerate(seletedhand.landmark):
@@ -33,8 +33,8 @@ class handDetector():
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 lmList.append([id, cx, cy])
                 if draw:
-                    if id == handID:
-                        cv2.circle(img, (cx, cy), 8, (24, 255, 0), cv2.FILLED)
+                    if id in drawItems:
+                        cv2.circle(img, (cx, cy), 7, (24, 255, 0), cv2.FILLED)
 
         return lmList
 
@@ -56,9 +56,9 @@ def main():
         if not ret:
             print("Can't receive img (stream end?). Exiting ...")
             break
-        img = detector.findHands(img)
+        
         lmList = detector.findPosition(img, draw=True)
-
+        img = detector.findHands(img)
         if len(lmList) != 0:
             print(lmList[8])
         cTime = time.time()

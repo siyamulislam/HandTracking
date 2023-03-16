@@ -1,3 +1,5 @@
 venv/
 .idea/
+__pycache__
 output.avi
+input.avi
