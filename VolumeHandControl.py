@@ -36,7 +36,7 @@ volume = cast(interface, POINTER(IAudioEndpointVolume))
 volRange = volume.GetVolumeRange()
 minVol = volRange[0]
 maxVol = volRange[1]
-volBar=400;volPer=0
+volBar=400;volPer=0;volRatio=0
 
 while (True):
     ret, img = cap.read()
@@ -44,8 +44,9 @@ while (True):
         print("Can't receive img (stream end?). Exiting ...")
         break
     lmList = detector.findPosition(img, drawItems=[4, 8], draw=False)
-    cv2.rectangle(img,(30,50),(60,400),(0,255,0),3)
-    cv2.rectangle(img,(30,int(volBar)),(60,400),(0,255,0),cv2.FILLED)
+
+    cv2.rectangle(img,(40,50),(70,400),(0,255,0),3)
+    cv2.rectangle(img,(40,int(volBar)),(70,400),(0,255,0),cv2.FILLED)
 
 
     if len(lmList) != 0:
@@ -61,11 +62,13 @@ while (True):
         length = int(math.hypot(x2-x1, y2-y1))
         # hand range 30-300 | vol range -65-0
 
-        vol=np.interp(length,[50,250],[minVol,maxVol])
-        volBar=np.interp(length,[50,250],[400,50])
-        volPer=np.interp(length,[50,250],[0,100])
+        vol=np.interp(length,   [15,130],[minVol,maxVol])
+        volPer=np.interp(length,[15,130],[0,100])
+        # volRatio=np.interp(length,[minVol,maxVol],[0,100])
+        volBar=np.interp(length,[15,130],[400,50])
 
-        cv2.rectangle(img,(30,int(volBar)),(60,400),(0,255,0),cv2.FILLED)
+
+        cv2.rectangle(img,(40,int(volBar)),(70,400),(0,255,0),cv2.FILLED)
 
         print(length,int(vol),int(volBar)) 
         volume.SetMasterVolumeLevel(vol, None)
@@ -89,8 +92,8 @@ while (True):
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime = cTime
-    cv2.putText(img, f'FPS:{int(fps)}', (wCam-150, 30),  cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
-    cv2.putText(img, f'Vol:{int(volPer)}%', (10, 30),  cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+    cv2.putText(img, f'FPS:{int(fps)}', (10, 30),  cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+    cv2.putText(img, f'Vol:{int(volPer)}%', (10, 430),  cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
 
     cv2.imshow('img', img)
 
