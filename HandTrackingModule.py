@@ -16,6 +16,8 @@ class handDetector():
         self.mpDraw = mp.solutions.drawing_utils
 
     def findHands(self, img, draw=True):
+        # imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        # self.results = self.hands.process(imgRGB)
         if self.results.multi_hand_landmarks:
             for handLms in self.results.multi_hand_landmarks:
                 if draw:
@@ -35,9 +37,7 @@ class handDetector():
                 if draw:
                     if id in drawItems:
                         cv2.circle(img, (cx, cy), 7, (24, 255, 0), cv2.FILLED)
-
         return lmList
-
 
 def main():
     record = False

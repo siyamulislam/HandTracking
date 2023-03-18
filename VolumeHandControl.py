@@ -43,6 +43,7 @@ while (True):
     if not ret:
         print("Can't receive img (stream end?). Exiting ...")
         break
+    img = cv2.flip(img, 1)
     lmList = detector.findPosition(img, drawItems=[4, 8], draw=False)
 
     cv2.rectangle(img,(40,50),(70,400),(0,255,0),3)
