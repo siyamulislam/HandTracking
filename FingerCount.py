@@ -28,7 +28,7 @@ while True:
     lmList =detector.findPosition(img, draw=False)
     img =detector.findHands(img)
     h,w,c=overlayList[0].shape
-    print(lmList)
+    # print(lmList)
     if len(lmList)!=0:
         fingers =[]
         # if lmList[tipIds[0]][2]>lmList[tipIds[4]][2]:
@@ -47,10 +47,13 @@ while True:
             else:
                 fingers.append(0)
         
-        img[0:h,0:w] = overlayList[id]-1
         # print(fingers)
-    # img[0:h,0:w] = overlayList[0]
-    
+        totalFinger= fingers.count(1)
+        img[0:h,0:w] = overlayList[totalFinger-1]
+        # print(totalFinger)
+        cv2.rectangle(img,(20,225),(170,425),(0,255,0),cv2.FILLED)
+        cv2.putText(img, f'{totalFinger}',(45,375),cv2.FONT_HERSHEY_COMPLEX,5,(255,0,0),20)
+        
     cTime = time.time()
     fps = 1 / (cTime - pTime)
     pTime = cTime
