@@ -14,39 +14,36 @@ overlayList = []
 for imgPath in myList:
     image =cv2.imread(f'{folderPath}/{imgPath}')
     image = cv2.resize(image, (200, 200))
-
     # print(f'{folderPath}/{imgPath}')
     overlayList.append(image)
 # print(len(overlayList))
 detector = htm.handDetector(detectionCon=0.75)
 tipIds = [4,8,12,16,20]
 
-
 while True:
     success, img = cap.read()
-    img = cv2.flip(img, 1)
+    # img = cv2.flip(img, 1)
     lmList =detector.findPosition(img, draw=False)
     img =detector.findHands(img)
     h,w,c=overlayList[0].shape
     # print(lmList)
     if len(lmList)!=0:
         fingers =[]
-        # if lmList[tipIds[0]][2]>lmList[tipIds[4]][2]:
-        #     print('front' ,lmList[tipIds[0]][2], lmList[tipIds[4]][2])
-        # else:
-        #     print('rear' ,lmList[tipIds[0]][2], lmList[tipIds[4]][2])
-        #thumb
-        if lmList[tipIds[0]][1]<lmList[tipIds[0]-1][1]:
-            fingers.append(1)
+         #thumb
+        if lmList[tipIds[0]][1]>lmList[tipIds[4]][1]:
+            # print('right' ,lmList[tipIds[0]][1], lmList[tipIds[4]][1])
+            fingers.append(1) if lmList[tipIds[0]][1]>lmList[tipIds[0]-1][1] else fingers.append(0)
         else:
-            fingers.append(0)
+            # print('left' ,lmList[tipIds[0]][1], lmList[tipIds[4]][1])
+            fingers.append(1) if lmList[tipIds[0]][1]<lmList[tipIds[0]-1][1] else fingers.append(0)
+    
         #4 fingers
         for id in range(1,5):  
             if lmList[tipIds[id]][2]<lmList[tipIds[id]-2][2]:
                 fingers.append(1)
             else:
                 fingers.append(0)
-        
+
         # print(fingers)
         totalFinger= fingers.count(1)
         img[0:h,0:w] = overlayList[totalFinger-1]
