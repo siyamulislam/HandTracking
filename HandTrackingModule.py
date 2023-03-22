@@ -13,7 +13,9 @@ class handDetector():
         self.mpHands = mp.solutions.hands
         self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.modelComplexity, self.detectionCon,
                                         self.trackCon)
-        self.mpDraw = mp.solutions.drawing_utils
+        self.mpDraw = mp.solutions.drawing_utils 
+        self.tipIds = [4,8,12,16,20]
+        # self.lmList=[]
 
     def findHands(self, img, draw=True):
         # imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -25,7 +27,7 @@ class handDetector():
         return img
 
     def findPosition(self, img, handNo=0, drawItems=[4,8], draw=True):
-        lmList = []
+        self.lmList = []
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
         if self.results.multi_hand_landmarks:
@@ -33,11 +35,30 @@ class handDetector():
             for id, lm in enumerate(seletedhand.landmark):
                 h, w, c = img.shape
                 cx, cy = int(lm.x * w), int(lm.y * h)
-                lmList.append([id, cx, cy])
+                self.lmList.append([id, cx, cy])
                 if draw:
                     if id in drawItems:
                         cv2.circle(img, (cx, cy), 7, (24, 255, 0), cv2.FILLED)
-        return lmList
+        return self.lmList
+    
+    def fingersUp(self):
+        fingers =[]
+         #thumb
+        if self.lmList[self.tipIds[0]][1]>self.lmList[self.tipIds[4]][1]:
+            # print('right' ,lmList[self.tipIds[0]][1], lmList[self.tipIds[4]][1])
+            fingers.append(1) if self.lmList[self.tipIds[0]][1]>self.lmList[self.tipIds[0]-1][1] else fingers.append(0)
+        else:
+            # print('left' ,lmList[self.tipIds[0]][1], lmList[self.tipIds[4]][1])
+            fingers.append(1) if self.lmList[self.tipIds[0]][1]<self.lmList[self.tipIds[0]-1][1] else fingers.append(0)
+    
+        #4 fingers
+        for id in range(1,5):  
+            if self.lmList[self.tipIds[id]][2]<self.lmList[self.tipIds[id]-2][2]:
+                fingers.append(1)
+            else:
+                fingers.append(0)
+        return fingers
+
 
 def main():
     record = False
