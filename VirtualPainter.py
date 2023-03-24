@@ -29,7 +29,7 @@ if (cap.isOpened() == False):
 cap.set(3, wCam)
 cap.set(4, hCam)
 out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10, (wCam, hCam), True)
-detector =htm.handDetector(0.60)
+detector =htm.handDetector(0.70)
 
 while (True):
     ret, img = cap.read()
