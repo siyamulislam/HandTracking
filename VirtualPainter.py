@@ -22,7 +22,7 @@ eraserThickness=100
 imgCanvas= np.zeros((720,1280,3),np.uint8)
 xp,yp=0,0
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture()
 # cap = cv2.VideoCapture('input.avi')
 if (cap.isOpened() == False):
     print("Unable to read camera feed")

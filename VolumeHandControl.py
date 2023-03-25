@@ -36,7 +36,9 @@ volume = cast(interface, POINTER(IAudioEndpointVolume))
 volRange = volume.GetVolumeRange()
 minVol = volRange[0]
 maxVol = volRange[1]
-volBar=400;volPer=0;volRatio=0
+volBar = 400
+volPer = 0
+volRatio = 0
 
 while (True):
     ret, img = cap.read()
@@ -46,9 +48,8 @@ while (True):
     img = cv2.flip(img, 1)
     lmList = detector.findPosition(img, drawItems=[4, 8], draw=False)
 
-    cv2.rectangle(img,(40,50),(70,400),(0,255,0),3)
-    cv2.rectangle(img,(40,int(volBar)),(70,400),(0,255,0),cv2.FILLED)
-
+    cv2.rectangle(img, (40, 50), (70, 400), (0, 255, 0), 3)
+    cv2.rectangle(img, (40, int(volBar)), (70, 400), (0, 255, 0), cv2.FILLED)
 
     if len(lmList) != 0:
         x1, y1 = lmList[4][1], lmList[4][2]
@@ -63,18 +64,16 @@ while (True):
         length = int(math.hypot(x2-x1, y2-y1))
         # hand range 30-300 | vol range -65-0
 
-        vol=np.interp(length,   [15,130],[minVol,maxVol])
-        volPer=np.interp(length,[15,130],[0,100])
+        vol = np.interp(length,   [15, 130], [minVol, maxVol])
+        volPer = np.interp(length, [15, 130], [0, 100])
         # volRatio=np.interp(length,[minVol,maxVol],[0,100])
-        volBar=np.interp(length,[15,130],[400,50])
+        volBar = np.interp(length, [15, 130], [400, 50])
 
+        cv2.rectangle(img, (40, int(volBar)), (70, 400),
+                      (0, 255, 0), cv2.FILLED)
 
-        cv2.rectangle(img,(40,int(volBar)),(70,400),(0,255,0),cv2.FILLED)
-
-        print(length,int(vol),int(volBar)) 
+        print(length, int(vol), int(volBar))
         volume.SetMasterVolumeLevel(vol, None)
-
-
 
         if length in range(0, 35):
             cv2.circle(img, (cx, cy), 7, (255, 255, 255), cv2.FILLED)
@@ -87,14 +86,15 @@ while (True):
         else:
             print("Value is outside the specified ranges")
 
-
     img = detector.findHands(img, draw=True)
 
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime = cTime
-    cv2.putText(img, f'FPS:{int(fps)}', (10, 30),  cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
-    cv2.putText(img, f'Vol:{int(volPer)}%', (10, 430),  cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+    cv2.putText(img, f'FPS:{int(fps)}', (10, 30),
+                cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+    cv2.putText(img, f'Vol:{int(volPer)}%', (10, 430),
+                cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
 
     cv2.imshow('img', img)
 
